@@ -1,0 +1,91 @@
+body {
+  margin: 0;
+  background: #0B1120;
+  font-family: Inter, sans-serif;
+}
+
+.container {
+  text-align: center;
+  color: #F8FAFC;
+  padding: 40px;
+}
+
+.card {
+  background: rgba(30, 41, 59, 0.7);
+  padding: 30px;
+  border-radius: 16px;
+  max-width: 400px;
+  margin: 20px auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: none;
+}
+
+button {
+  background: #2563EB;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  width: 100%;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #3B82F6;
+}
+
+.result {
+  margin-top: 30px;
+}
+
+.result-card {
+  margin-top: 40px;
+  background: rgba(30, 41, 59, 0.7);
+  padding: 30px;
+  border-radius: 16px;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.score {
+  font-size: 48px;
+  margin: 10px 0;
+}
+
+.risk-badge {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: bold;
+  margin: 15px auto;
+  display: inline-block;
+}
+
+.low {
+  background: #22C55E;
+  color: white;
+}
+
+.medium {
+  background: #F59E0B;
+  color: white;
+}
+
+.high {
+  background: #EF4444;
+  color: white;
+}
+
+.score-circle {
+  width: 160px;
+  height: 160px;
+  margin: 0 auto 20px auto;
+}
