@@ -15,6 +15,18 @@ Using a Logistic Regression ML model, ByteNova predicts default probability and 
 
 ---
 
+## ⭐ Key Features
+
+- Behavioral credit scoring for MSMEs
+- Explainable AI risk analysis
+- Real-time credit score generation
+- Vendor evaluation history tracking
+- Dynamic risk analytics dashboard
+- Node.js ↔ Python ML microservice architecture
+- Logistic Regression probability-based scoring
+
+---
+
 ## 🧠 Problem Statement
 
 Traditional credit scoring systems rely heavily on historical credit data, excluding:
@@ -37,6 +49,40 @@ User → React Frontend → Node Backend → Python ML Microservice → Logistic
 
 ---
 
+## 📂 Project Structure
+
+```
+bytenova-credit-system
+│
+├── frontend/           # React + Vite UI
+│   ├── src/pages
+│   ├── src/components
+│   └── src/services
+│
+├── backend/            # Node.js API
+│   └── server.js
+│
+├── ml-model/           # Python ML microservice
+│   ├── train_model.py
+│   ├── predict.py
+│   └── credit_model.pkl
+│
+└── assets/             # Architecture & UI images
+```
+
+---
+
+## 🔄 System Workflow
+
+1. User enters vendor financial details
+2. React frontend sends data to Node.js backend
+3. Node backend forwards data to Python ML service
+4. Logistic Regression model predicts probability of default
+5. Probability is converted into a credit score
+6. Score and risk category are returned to the dashboard
+
+---
+
 ## 📊 Machine Learning Model
 
 - Model: Logistic Regression
@@ -44,7 +90,18 @@ User → React Frontend → Node Backend → Python ML Microservice → Logistic
 - Accuracy: **86%**
 - Output: Default Probability
 
-Score formula: Credit Score = 900 - (Default Probability × 600)
+### Score Formula
+
+```
+Credit Score = 1000 × (1 − Probability of Default)
+```
+
+### Risk Categories
+
+- **800–1000** → Low Risk
+- **650–799** → Moderate Risk
+- **500–649** → Risky Borrower
+- **Below 500** → High Risk
 
 ---
 
@@ -73,6 +130,19 @@ Score formula: Credit Score = 900 - (Default Probability × 600)
 ![UI Preview](assets/ui-preview.png)
 
 ![ML Score Preview](assets/ml-score-preview.png)
+
+---
+
+## 🧪 Sample Input
+
+```
+Vendor: Ramesh Kirana
+City: Mumbai
+Income: ₹40,000
+Expense: ₹25,000
+Digital Payment Ratio: 40%
+Income Stability Score: 10
+```
 
 ---
 
@@ -130,3 +200,10 @@ http://localhost:5173
 National Online Hackathon 2026 – Startup & Open Innovation
 
 Domain: AI/ML for Business
+
+
+---
+
+## 📄 License
+
+This project is developed for educational and hackathon demonstration purposes.
