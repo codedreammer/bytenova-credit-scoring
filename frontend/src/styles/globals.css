@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@layer theme, base, components, utilities;
+
+@theme {
+  --color-primary-green: #14532D;
+  --color-accent-green: #22C55E;
+  --color-background: #F5F7FA;
+  --color-card-background: #FFFFFF;
+  --color-low-risk: #22C55E;
+  --color-moderate-risk: #F59E0B;
+  --color-high-risk: #EF4444;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: #111827;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
