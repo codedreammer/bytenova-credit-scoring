@@ -7,9 +7,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Temporary in-memory database
+const evaluations = [];
+
 app.post("/score", async (req, res) => {
   try {
-    const { income, expense, digitalPercent, incomeStability } = req.body;
+    const { income, expense, digitalPercent, incomeStability, vendorName, city, scheme } = req.body;
 
     const response = await axios.post("http://127.0.0.1:8000/predict", {
       income: income,
@@ -23,16 +26,26 @@ app.post("/score", async (req, res) => {
     // Convert probability to credit score (300–900 scale)
     const score = Math.round(900 - probability * 600);
 
-    let risk = "Medium";
+    let risk = "Moderate";
     if (score >= 750) risk = "Low";
     if (score < 600) risk = "High";
 
     const suggestedLoan =
       risk === "Low"
         ? income * 5
-        : risk === "Medium"
+        : risk === "Moderate"
         ? income * 3
         : income * 1;
+
+    evaluations.push({
+      id: Date.now(),
+      vendor: vendorName || "Vendor",
+      city: city || "Unknown",
+      scheme: scheme || "Mudra",
+      score: Math.round(score),
+      risk,
+      date: new Date().toISOString()
+    });
 
     res.json({
       score,
@@ -45,6 +58,10 @@ app.post("/score", async (req, res) => {
     console.error("ML Error:", error.message);
     res.status(500).json({ error: "ML service error" });
   }
+});
+
+app.get("/evaluations", (_req, res) => {
+  res.json(evaluations);
 });
 
 app.listen(5000, () => {
