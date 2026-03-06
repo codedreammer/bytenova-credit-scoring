@@ -15,7 +15,7 @@ export default function NewEvaluation() {
         incomeStability: 0,
     });
 
-    // Extra fields that aren't sent to API but are part of UX logic per prompt
+    // Additional business-profile fields captured in the form.
     const [vendorName, setVendorName] = useState('');
     const [city, setCity] = useState('');
     const [segment, setSegment] = useState('');
@@ -25,6 +25,18 @@ export default function NewEvaluation() {
     const [error, setError] = useState<string | null>(null);
     const [result, setResult] = useState<EvaluationResponse | null>(null);
     const [submittedData, setSubmittedData] = useState<EvaluationPayload | null>(null);
+
+    const getSchemeLabel = (value: string) => {
+        const schemeMap: Record<string, string> = {
+            mudra: 'Mudra Yojana',
+            standup: 'Stand Up India',
+            pmegp: 'PMEGP',
+            pmsvanidhi: 'PM SVANidhi',
+            none: 'None / Direct Lending',
+        };
+
+        return schemeMap[value] ?? value;
+    };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -43,8 +55,15 @@ export default function NewEvaluation() {
         setError(null);
 
         try {
-            const response = await evaluateCredit(formData);
-            setSubmittedData(formData);
+            const payload: EvaluationPayload = {
+                ...formData,
+                vendorName: vendorName.trim(),
+                city: city.trim(),
+                scheme: getSchemeLabel(scheme),
+            };
+
+            const response = await evaluateCredit(payload);
+            setSubmittedData(payload);
             setResult({
                 score: response.score,
                 risk: response.risk,

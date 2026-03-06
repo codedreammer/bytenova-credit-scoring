@@ -4,12 +4,12 @@ interface FeatureItem {
 }
 
 const featureWeights: FeatureItem[] = [
-    { name: 'Income Stability', weight: 25 },
-    { name: 'Digital Adoption', weight: 20 },
-    { name: 'Savings Capacity', weight: 20 },
-    { name: 'Transaction Tenure', weight: 15 },
-    { name: 'Transaction Volume', weight: 10 },
-    { name: 'Liability Burden', weight: 10 },
+    { name: 'Income Stability Score (25%)', weight: 25 },
+    { name: 'Digital Payment Ratio (20%)', weight: 20 },
+    { name: 'Income-Expense Margin (20%)', weight: 20 },
+    { name: 'Business Stability Indicator (15%)', weight: 15 },
+    { name: 'Revenue Scale (10%)', weight: 10 },
+    { name: 'Expense Burden (10%)', weight: 10 },
 ];
 
 export default function FeatureImportance() {

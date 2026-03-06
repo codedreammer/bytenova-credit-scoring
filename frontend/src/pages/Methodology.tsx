@@ -1,5 +1,4 @@
-
-import { Database, Cpu, Activity, Lightbulb, PieChart, TrendingUp } from 'lucide-react';
+﻿import { Database, Cpu, Activity, Lightbulb, PieChart, TrendingUp } from 'lucide-react';
 import FeatureImportance from '../components/FeatureImportance';
 
 export default function Methodology() {
@@ -30,7 +29,7 @@ export default function Methodology() {
                         {
                             step: 'Step 3',
                             title: 'AI Risk Scoring',
-                            desc: 'Our proprietary Logistic Regression model dynamically calculates probability of default & calibrates creditworthiness.',
+                            desc: 'Our Logistic Regression model estimates the probability of credit default using behavioral financial indicators. The model outputs a probability of default (PD), which is then transformed into a standardized credit score between 0 and 1000 and mapped into risk categories.',
                             icon: <Cpu className="text-[#22C55E]" size={28} />
                         },
                         {
@@ -54,6 +53,27 @@ export default function Methodology() {
                 </div>
             </div>
 
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold text-gray-900 border-l-4 border-[#22C55E] pl-4">System Architecture</h2>
+                <div className="max-w-3xl mx-auto space-y-3">
+                    <div className="bg-white rounded-xl border border-gray-100 shadow-sm px-5 py-4 text-center">
+                        <p className="text-sm font-semibold text-gray-900">User Interface (React Frontend)</p>
+                    </div>
+                    <p className="text-center text-[#22C55E] font-bold text-lg leading-none">&#8595;</p>
+                    <div className="bg-white rounded-xl border border-gray-100 shadow-sm px-5 py-4 text-center">
+                        <p className="text-sm font-semibold text-gray-900">API Processing Layer (Node.js Backend)</p>
+                    </div>
+                    <p className="text-center text-[#22C55E] font-bold text-lg leading-none">&#8595;</p>
+                    <div className="bg-white rounded-xl border border-gray-100 shadow-sm px-5 py-4 text-center">
+                        <p className="text-sm font-semibold text-gray-900">Machine Learning Service (Python Flask API)</p>
+                    </div>
+                    <p className="text-center text-[#22C55E] font-bold text-lg leading-none">&#8595;</p>
+                    <div className="bg-white rounded-xl border border-gray-100 shadow-sm px-5 py-4 text-center">
+                        <p className="text-sm font-semibold text-gray-900">Credit Scoring Model (Scikit-Learn Logistic Regression)</p>
+                    </div>
+                </div>
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 pt-8 border-t border-gray-100">
                 <div>
                     <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
@@ -67,34 +87,50 @@ export default function Methodology() {
                     <div className="bg-gradient-to-br from-[#14532D] to-[#064e3b] p-8 rounded-2xl text-white shadow-xl relative overflow-hidden group">
                         <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
                         <h3 className="text-xl font-bold mb-4 flex items-center gap-2 relative z-10"><TrendingUp /> Constant Refinement</h3>
-                        <p className="text-green-50/90 leading-relaxed text-sm relative z-10">Our Logistic Regression pipelines undergo continuous retraining schedules to identify new predictive matrices combating evolving borrower risk behaviors effectively without bias injection.</p>
+                        <p className="text-green-50/90 leading-relaxed text-sm relative z-10">Our Logistic Regression pipelines can be periodically retrained using updated behavioral financial datasets. Continuous retraining allows the system to adapt to evolving borrower patterns while maintaining model transparency and regulatory interpretability.</p>
                     </div>
 
                     <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
                         <h3 className="text-lg font-bold text-gray-900 mb-4">Underlying ML Service</h3>
                         <ul className="space-y-3 text-sm text-gray-600">
                             <li className="flex items-start gap-3">
-                                <span className="bg-[#22C55E]/10 text-[#22C55E] p-1 rounded">✓</span>
+                                <span className="bg-[#22C55E]/10 text-[#22C55E] p-1 rounded">&#10003;</span>
                                 <div>
                                     <strong className="block text-gray-800">Scikit-Learn Backend</strong>
                                     Robust serialized python deployment (credit_model.pkl).
                                 </div>
                             </li>
                             <li className="flex items-start gap-3">
-                                <span className="bg-[#22C55E]/10 text-[#22C55E] p-1 rounded">✓</span>
+                                <span className="bg-[#22C55E]/10 text-[#22C55E] p-1 rounded">&#10003;</span>
                                 <div>
                                     <strong className="block text-gray-800">Deterministic Output</strong>
-                                    Scores strictly bounded between 0-100 ensuring predictable thresholds.
+                                    Probability outputs are transformed into standardized scores on a 0-1000 scale.
                                 </div>
                             </li>
                             <li className="flex items-start gap-3">
-                                <span className="bg-[#22C55E]/10 text-[#22C55E] p-1 rounded">✓</span>
+                                <span className="bg-[#22C55E]/10 text-[#22C55E] p-1 rounded">&#10003;</span>
                                 <div>
                                     <strong className="block text-gray-800">RESTful Flask Bridge</strong>
-                                    Low latency synchronous Node.js ↔ Flask API communication.
+                                    Low latency synchronous Node.js to Flask API communication.
                                 </div>
                             </li>
                         </ul>
+                    </div>
+
+                    <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
+                        <h3 className="text-lg font-bold text-gray-900 mb-4">Credit Score Calculation</h3>
+                        <div className="space-y-4 text-sm text-gray-600">
+                            <p className="text-gray-800 font-semibold">Credit Score = 1000 &times; (1 &minus; Probability of Default)</p>
+                            <div>
+                                <p className="font-semibold text-gray-900 mb-2">Risk Categories</p>
+                                <ul className="space-y-1">
+                                    <li>800 - 1000 &rarr; Low Risk</li>
+                                    <li>650 - 799 &rarr; Moderate Risk</li>
+                                    <li>500 - 649 &rarr; Risky Borrower</li>
+                                    <li>Below 500 &rarr; High Risk</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

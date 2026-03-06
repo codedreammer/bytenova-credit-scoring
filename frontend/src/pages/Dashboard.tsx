@@ -1,15 +1,53 @@
-
+import { useEffect, useMemo, useState } from 'react';
 import StatCard from '../components/StatCard';
 import RiskBadge from '../components/RiskBadge';
 import { Users, CreditCard, CheckCircle, AlertTriangle } from 'lucide-react';
+import { fetchEvaluations } from '../services/api';
+import type { EvaluationRecord } from '../services/api';
 
 export default function Dashboard() {
-    const recentEvaluations = [
-        { id: 1, vendor: 'Ramesh Kirana', city: 'Mumbai', scheme: 'Mudra', score: 82, risk: 'Low Risk' },
-        { id: 2, vendor: 'Suresh Textiles', city: 'Surat', scheme: 'Stand Up India', score: 65, risk: 'Moderate Risk' },
-        { id: 3, vendor: 'Pooja Electronics', city: 'Delhi', scheme: 'PMEGP', score: 45, risk: 'High Risk' },
-        { id: 4, vendor: 'Anita Boutique', city: 'Pune', scheme: 'Mudra', score: 78, risk: 'Low Risk' },
-    ];
+    const [evaluations, setEvaluations] = useState<EvaluationRecord[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const loadData = async () => {
+            try {
+                const data = await fetchEvaluations();
+                const sortedData = [...data].sort(
+                    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+                );
+                setEvaluations(sortedData);
+            } catch (err) {
+                console.error('Failed to fetch dashboard evaluations:', err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        loadData();
+    }, []);
+
+    const stats = useMemo(() => {
+        const total = evaluations.length;
+        const low = evaluations.filter((e) => e.risk === 'Low').length;
+        const moderate = evaluations.filter((e) => e.risk === 'Moderate').length;
+        const high = evaluations.filter((e) => e.risk === 'High').length;
+        const avgScore = total > 0
+            ? (evaluations.reduce((sum, item) => sum + item.score, 0) / total).toFixed(1)
+            : '0';
+
+        return {
+            total,
+            low,
+            moderate,
+            high,
+            avgScore,
+            recommended: low + moderate,
+            reviewRequired: high,
+        };
+    }, [evaluations]);
+
+    const recentEvaluations = evaluations.slice(0, 5);
 
     return (
         <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -23,31 +61,26 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <StatCard
                     title="Total Evaluations"
-                    value="1,248"
+                    value={stats.total}
                     icon={<Users size={20} />}
-                    trend={{ value: '12%', isPositive: true }}
                 />
                 <StatCard
                     title="Avg Credit Score"
-                    value="71.4"
+                    value={stats.avgScore}
                     icon={<CreditCard size={20} />}
-                    trend={{ value: '2.4', isPositive: true }}
                 />
                 <StatCard
                     title="Recommended Cases"
-                    value="842"
+                    value={stats.recommended}
                     icon={<CheckCircle size={20} />}
-                    trend={{ value: '8%', isPositive: true }}
                 />
                 <StatCard
                     title="Review Required"
-                    value="156"
+                    value={stats.reviewRequired}
                     icon={<AlertTriangle size={20} />}
-                    trend={{ value: '1.2%', isPositive: false }}
                 />
             </div>
 
-            {/* Risk Distribution */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                 <h3 className="text-lg font-bold text-gray-900 mb-4">
                     Risk Distribution
@@ -56,17 +89,17 @@ export default function Dashboard() {
                 <div className="grid grid-cols-3 gap-4 text-center">
                     <div className="bg-green-50 rounded-lg p-4">
                         <p className="text-sm text-gray-600">Low Risk</p>
-                        <p className="text-2xl font-bold text-green-600">3</p>
+                        <p className="text-2xl font-bold text-green-600">{stats.low}</p>
                     </div>
 
                     <div className="bg-orange-50 rounded-lg p-4">
                         <p className="text-sm text-gray-600">Moderate</p>
-                        <p className="text-2xl font-bold text-orange-500">4</p>
+                        <p className="text-2xl font-bold text-orange-500">{stats.moderate}</p>
                     </div>
 
                     <div className="bg-red-50 rounded-lg p-4">
                         <p className="text-sm text-gray-600">High Risk</p>
-                        <p className="text-2xl font-bold text-red-500">2</p>
+                        <p className="text-2xl font-bold text-red-500">{stats.high}</p>
                     </div>
                 </div>
             </div>
@@ -74,9 +107,6 @@ export default function Dashboard() {
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="p-6 border-b border-gray-100 flex items-center justify-between">
                     <h2 className="text-xl font-bold text-gray-900">Recent Evaluations</h2>
-                    <button className="text-sm font-semibold text-[#14532D] hover:text-[#22C55E] transition-colors">
-                        View All →
-                    </button>
                 </div>
 
                 <div className="overflow-x-auto">
@@ -91,28 +121,42 @@ export default function Dashboard() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                            {recentEvaluations.map((evalItem) => (
-                                <tr key={evalItem.id} className="hover:bg-gray-50/50 transition-colors">
-                                    <td className="px-6 py-4">
-                                        <p className="font-bold text-gray-900">{evalItem.vendor}</p>
-                                        <p className="text-sm text-gray-500">{evalItem.city}</p>
-                                    </td>
-                                    <td className="px-6 py-4 font-medium text-gray-700">{evalItem.scheme}</td>
-                                    <td className="px-6 py-4 text-center">
-                                        <span className="inline-flex justify-center w-10 font-bold text-gray-900">
-                                            {evalItem.score}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <RiskBadge level={evalItem.risk} />
-                                    </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <button className="text-sm font-medium text-gray-500 hover:text-[#14532D] transition-colors py-1 px-3 border border-gray-200 rounded-lg hover:border-[#14532D]/30 hover:bg-[#14532D]/5">
-                                            Details
-                                        </button>
+                            {isLoading ? (
+                                <tr>
+                                    <td colSpan={5} className="px-6 py-10 text-center text-gray-500 font-medium">
+                                        Loading recent evaluations...
                                     </td>
                                 </tr>
-                            ))}
+                            ) : recentEvaluations.length > 0 ? (
+                                recentEvaluations.map((evalItem) => (
+                                    <tr key={evalItem.id} className="hover:bg-gray-50/50 transition-colors">
+                                        <td className="px-6 py-4">
+                                            <p className="font-bold text-gray-900">{evalItem.vendor}</p>
+                                            <p className="text-sm text-gray-500">{evalItem.city}</p>
+                                        </td>
+                                        <td className="px-6 py-4 font-medium text-gray-700">{evalItem.scheme}</td>
+                                        <td className="px-6 py-4 text-center">
+                                            <span className="inline-flex justify-center w-10 font-bold text-gray-900">
+                                                {evalItem.score}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <RiskBadge level={evalItem.risk} />
+                                        </td>
+                                        <td className="px-6 py-4 text-right">
+                                            <button className="text-sm font-medium text-gray-500 hover:text-[#14532D] transition-colors py-1 px-3 border border-gray-200 rounded-lg hover:border-[#14532D]/30 hover:bg-[#14532D]/5">
+                                                Details
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={5} className="px-6 py-10 text-center text-gray-500 font-medium">
+                                        No evaluations generated yet.
+                                    </td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>
@@ -120,3 +164,4 @@ export default function Dashboard() {
         </div>
     );
 }
+

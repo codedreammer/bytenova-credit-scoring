@@ -1,22 +1,40 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import RiskBadge from '../components/RiskBadge';
 import { Filter, Search } from 'lucide-react';
+import { fetchEvaluations } from '../services/api';
+import type { EvaluationRecord } from '../services/api';
 
 export default function History() {
     const [filter, setFilter] = useState('All');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [evaluations, setEvaluations] = useState<EvaluationRecord[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    const historyData = [
-        { id: 1, vendor: 'Ramesh Kirana', city: 'Mumbai', scheme: 'Mudra', score: 82, risk: 'Low Risk', date: 'Oct 24, 2023' },
-        { id: 2, vendor: 'Suresh Textiles', city: 'Surat', scheme: 'Stand Up India', score: 65, risk: 'Moderate Risk', date: 'Oct 22, 2023' },
-        { id: 3, vendor: 'Pooja Electronics', city: 'Delhi', scheme: 'PMEGP', score: 45, risk: 'High Risk', date: 'Oct 20, 2023' },
-        { id: 4, vendor: 'Anita Boutique', city: 'Pune', scheme: 'Mudra', score: 78, risk: 'Low Risk', date: 'Oct 18, 2023' },
-        { id: 5, vendor: 'Rahul Hardware', city: 'Bangalore', scheme: 'PMEGP', score: 55, risk: 'Moderate Risk', date: 'Oct 15, 2023' },
-        { id: 6, vendor: 'Neha Cosmetics', city: 'Hyderabad', scheme: 'Stand Up India', score: 88, risk: 'Low Risk', date: 'Oct 12, 2023' },
-    ];
+    useEffect(() => {
+        const loadData = async () => {
+            try {
+                const data = await fetchEvaluations();
+                const sortedData = [...data].sort(
+                    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+                );
+                setEvaluations(sortedData);
+            } catch (err) {
+                console.error('Failed to fetch evaluations:', err);
+                setError('Could not load evaluation history.');
+            } finally {
+                setIsLoading(false);
+            }
+        };
 
-    const filteredData = filter === 'All'
-        ? historyData
-        : historyData.filter(item => item.risk.includes(filter));
+        loadData();
+    }, []);
+
+    const filteredData = evaluations.filter((item) => {
+        const matchesRisk = filter === 'All' || item.risk === filter;
+        const matchesSearch = item.vendor.toLowerCase().includes(searchTerm.toLowerCase());
+        return matchesRisk && matchesSearch;
+    });
 
     return (
         <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-75">
@@ -34,6 +52,8 @@ export default function History() {
                         <input
                             type="text"
                             placeholder="Search vendors..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
                             className="pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20 focus:outline-none transition-all w-full md:w-64"
                         />
                     </div>
@@ -69,11 +89,23 @@ export default function History() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                            {filteredData.length > 0 ? (
+                            {isLoading ? (
+                                <tr>
+                                    <td colSpan={5} className="px-6 py-12 text-center text-gray-500 font-medium">
+                                        Loading evaluations...
+                                    </td>
+                                </tr>
+                            ) : error ? (
+                                <tr>
+                                    <td colSpan={5} className="px-6 py-12 text-center text-[#EF4444] font-medium">
+                                        {error}
+                                    </td>
+                                </tr>
+                            ) : filteredData.length > 0 ? (
                                 filteredData.map((item) => (
                                     <tr key={item.id} className="hover:bg-gray-50/50 transition-colors group">
                                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">
-                                            {item.date}
+                                            {new Date(item.date).toLocaleDateString()}
                                         </td>
                                         <td className="px-6 py-4">
                                             <p className="font-bold text-gray-900 group-hover:text-[#14532D] transition-colors">{item.vendor}</p>

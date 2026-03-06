@@ -7,6 +7,9 @@ export interface EvaluationPayload {
     expense: number;
     digitalPercent: number;
     incomeStability: number;
+    vendorName?: string;
+    city?: string;
+    scheme?: string;
 }
 
 export interface EvaluationResponse {
@@ -16,7 +19,22 @@ export interface EvaluationResponse {
     confidence?: number;
 }
 
+export interface EvaluationRecord {
+    id: number;
+    vendor: string;
+    city: string;
+    scheme: string;
+    score: number;
+    risk: string;
+    date: string;
+}
+
 export const evaluateCredit = async (data: EvaluationPayload): Promise<EvaluationResponse> => {
     const response = await axios.post<EvaluationResponse>(`${API_BASE_URL}/score`, data);
+    return response.data;
+};
+
+export const fetchEvaluations = async (): Promise<EvaluationRecord[]> => {
+    const response = await axios.get<EvaluationRecord[]>(`${API_BASE_URL}/evaluations`);
     return response.data;
 };
